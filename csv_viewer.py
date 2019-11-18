@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 def load_data():
     # Prüfe, ob Datei vorhanden. Nein --> Fehlermeldung, fertig
     file_path = input_path.get()
-    if os.path.isfile(file_path):
+    if os.path.isfile(file_path):  # Datei vorhanden
         sep = radio_sep.get()
         decimal = radio_decimal.get()
         try:
@@ -30,6 +30,8 @@ def load_data():
             global options
             status.set('Reading file...')
             data = pd.read_csv(file_path, sep=sep, decimal=decimal)
+            reset_plot()
+            reset_dropdown()
             status.set('Read file successfully: <{}>'.format(file_path))
             
             # Set dropdown menu
@@ -37,16 +39,38 @@ def load_data():
             lst_dataselection.config(values=options)
         except:
             status.set('ERROR: Could not read file <{}>.'.format(file_path))
-    else:
+    else:  # Datei nicht vorhanden
         status.set('ERROR: File <{}> does not exist!'.format(file_path))
         #lbl_status.config(fg='red')  # Nur zum Test: Schriftfarbe ändern
     
     return 0
 
+def update_plot():
+    #global option
+    plot_series = lst_dataselection.get()
+    if plot_series in options:
+        global plot
+        status.set('Plotting <{}>...'.format(plot_series))
+        fig.clear()
+        fig.add_subplot(111).plot(data[plot_series])
+        canvas.draw()
+        status.set('Ok')
+    elif plot_series == '':
+        status.set('ERROR: Please select variable to plot.')
+    else:
+        status.set('ERROR: Series <{}> not available.'.format(plot_series))
+
 
 ###  INIT-FUNKTIONEN  #########################################################
 def set_status():
-    status.set('initialisiert')
+    status.set('Ok')
+
+def reset_plot():
+    fig.clear()
+    canvas.draw()
+
+def reset_dropdown():
+    lst_dataselection.config(values=[])
 
 
 ###  GUI-Elemente definieren  #################################################
@@ -89,8 +113,9 @@ frm_dataselection = tk.Frame(master=window)
 
 lbl_dataselection = tk.Label(master=frm_dataselection, text='Select plot data:')
 lst_dataselection = ttk.Combobox(master=frm_dataselection, values=options)
+btn_dataselection = tk.Button(master=frm_dataselection, text='Update plot', command=update_plot)
 
-canvas = tkagg.FigureCanvasTkAgg(fig, master = window)
+canvas = tkagg.FigureCanvasTkAgg(fig, master=window)
 canvas.draw()
 
 frm_status = tk.Frame(master=window, bg='#808080')
@@ -117,6 +142,7 @@ btn_load_data.pack(side='left', padx='7', anchor='e', expand=True)
 frm_dataselection.pack(side='top', padx='7', pady='7', fill='x', anchor='w')
 lbl_dataselection.pack(side='left')
 lst_dataselection.pack(side='left')
+btn_dataselection.pack(side='left', padx='7')
 
 # Plot
 frm_plot.pack(side='top', padx='7', pady='7', fill='both')
@@ -128,6 +154,7 @@ frm_status.pack(side='bottom', padx='7', pady='7', fill='x', expand=True)
 lbl_status.pack(side='left', padx='7')
 
 set_status()
+reset_plot()
 window.mainloop()
 
 # https://pythonbuch.com/gui.html
