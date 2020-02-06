@@ -25,11 +25,15 @@ def load_data():
     if os.path.isfile(file_path):  # Datei vorhanden
         sep = radio_sep.get()
         decimal = radio_decimal.get()
+        if chk_thousands.get() == 1:
+            thousands = '.'
+        else:
+            thousands = None
         try:
             global data
             global options
             status.set('Reading file...')
-            data = pd.read_csv(file_path, sep=sep, decimal=decimal)
+            data = pd.read_csv(file_path, sep=sep, decimal=decimal, thousands=thousands)
             reset_plot()
             reset_dropdown()
             status.set('Read file successfully: <{}>'.format(file_path))
@@ -97,6 +101,8 @@ radio_sep = tk.StringVar(window)
 radio_sep.set(',')  # Default value
 radio_decimal = tk.StringVar(window)
 radio_decimal.set('.')  # Default value
+chk_thousands = tk.IntVar(window)
+chk_thousands.set(0)  # Default value
 plotselection = tk.StringVar(window)
 options = []
 frm_plot = tk.Frame(master=window)
@@ -115,6 +121,8 @@ radio_sep2 = tk.Radiobutton(master=frm_input, variable=radio_sep, text=';', valu
 radio_sep3 = tk.Radiobutton(master=frm_input, variable=radio_sep, text='tab', value=r'\t')
 radio_decimal1 = tk.Radiobutton(master=frm_input, variable=radio_decimal, text='.', value='.')
 radio_decimal2 = tk.Radiobutton(master=frm_input, variable=radio_decimal, text=',', value=',')
+chk_thousands1 = tk.Checkbutton(master=frm_input, variable=chk_thousands, text='Thousands separator')
+
 btn_load_data = tk.Button(master=frm_input, text='Load data', command=load_data)
 
 # Datenauswahl
@@ -149,6 +157,8 @@ radio_sep3.pack(side='left', padx='7')
 lbl_dec.pack(side='left', padx='7', anchor='e', expand=True)
 radio_decimal1.pack(side='left', padx='7')
 radio_decimal2.pack(side='left', padx='7')
+chk_thousands1.pack(side='left', padx='7', anchor='e', expand=True)
+
 btn_load_data.pack(side='left', padx='7', anchor='e', expand=True)
 
 # Datenauswahl
