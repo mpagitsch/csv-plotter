@@ -1,14 +1,14 @@
-====================
-Einfacher CSV-Viewer
-====================
+=============================================================
+(Very) simple tool for plotting numeric contents of CSV files
+=============================================================
 
-Funktionen:
------------
+Functions:
+----------
 
-- Lesen einzelner CSV-Dateien
+- Read individual CSV file
 
-  - Unterstützte Spaltentrennzeichen: , | ; | \t
-  - Unterstützte Dezimalzeichen: . | ,
-  - Unterstützte Tausendertrennzeichen: . | None
+  - Supported column seperators: , | ; | \t
+  - Supported decimal separators: . | ,
+  - Supported thousands separators: . | None
 
-- Auswahl und interaktiver Plot einzelner Spalten aus der CSV-Datei (über Index)
+- Selection of individual columns from CSV file; interactive plot (over index)
